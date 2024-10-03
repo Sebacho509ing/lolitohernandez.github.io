@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">  
+</head>
+<body>
+    <div class="parent">
+        <div class="menu">
+            <a href="#inicio">Inicio</a>
+            <a href="#servicios">Servicios</a>
+            <a href="#acerca">Acerca de</a>
+            <a href="#contacto">Contacto</a>
+        </div>
+        
+        <div class="menu-vertical">
+            <a href="#" onclick="showContent('Grados')">Grados</a>
+            <a href="#" onclick="showContent('Docentes')">Docentes</a>
+            <a href="#" onclick="showContent('Modalidad')">Modalidad</a>
+            <a href="#" onclick="showContent('Días')">Días</a>
+            <a href="#" onclick="showContent('Salones')">Salones</a>
+            <a href="#" onclick="showContent('Horas')">Horas</a>
+            <a href="#" onclick="showContent('Asignación')">Asignación</a>
+            <a href="#" onclick="showContent('Material')">Material de clase</a>
+        </div>
+
+        <div class="div3" id="content-area">
+            <h2 id="content-title">Seleccione una opción</h2>
+            <div id="content-body">Por favor, elige una opción del menú vertical.</div>
+        </div>
+        
+        <footer class="pie-pagina">
+            <p>&copy; 2024 Mi Empresa. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
