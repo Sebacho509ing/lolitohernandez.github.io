@@ -1,102 +1,141 @@
-function showContent(content) {
-    const contentArea = document.getElementById('content-area');
-    contentArea.innerHTML = ''; // Limpiar contenido previo
+import React, { useState } from 'react';
+import './style.css';
 
-    createTab(content);
-    createContent(content);
+function App() {
+  const [activeContent, setActiveContent] = useState('Grados');
+
+  const showContent = (content) => {
+    setActiveContent(content);
+  };
+
+  return (
+    <div className="app-container">
+      <Header />
+      <div className="content-area">
+        <Menu showContent={showContent} />
+        <VerticalMenu showContent={showContent} />
+        <Content activeContent={activeContent} />
+      </div>
+      <Footer />
+    </div>
+  );
 }
 
-function createTab(content) {
-    const contentArea = document.getElementById('content-area');
-    const tab = document.createElement('a');
-    tab.className = 'tab tab-active';
-    tab.id = `tab-${content}`;
-    tab.textContent = content;
-    tab.onclick = () => activateTab(content);
-    contentArea.appendChild(tab);
+function Header() {
+  return (
+    <header className="app-header">
+    </header>
+  );
 }
 
-function createContent(content) {
-    const contentArea = document.getElementById('content-area');
-    let contentDiv;
+function Menu({ showContent }) {
+  return (
+    <nav className="app-menu">
+      <div className="menu-links">
+        <a href="#inicio" onClick={() => showContent('Grados')}>Inicio</a>
+        <a href="#servicios" onClick={() => showContent('Servicios')}>Servicios</a>
+        <a href="#acerca" onClick={() => showContent('Acerca')}>Acerca de</a>
+        <a href="#contacto" onClick={() => showContent('Contacto')}>Contacto</a>
+      </div>
+    </nav>
+  );
+}
 
-    if (content === 'Asignación') {
-        contentDiv = document.getElementById('asignacion-content');
-    } else if (content === 'InsertarAsignatura') {
-        contentDiv = document.getElementById('insertar-asignatura-content');
+function VerticalMenu({ showContent }) {
+  return (
+    <div className="vertical-menu">
+      {['Grados', 'Docentes', 'Modalidad', 'Días',
+       'Salones', 'Horas', 'Asignación', 
+       'InsertarAsignatura', 'Material'].map((item) => (
+        <a key={item} href="#" onClick={() => showContent(item)}>{item}</a>
+      ))}
+    </div>
+  );
+}
+
+function Content({ activeContent }) {
+  return (
+    <div className="app-content">
+      {activeContent === 'Asignación' && <Asignacion />}
+      {activeContent === 'InsertarAsignatura' && <InsertarAsignatura />}
+      {activeContent !== 'Asignación' && activeContent !== 'InsertarAsignatura' && (
+        <h2>Ingresa los datos de tu horario</h2>
+      )}
+    </div>
+  );
+}
+
+function Asignacion() {
+  const [inputValue, setInputValue] = useState('');
+  const [documentList, setDocumentList] = useState([]);
+
+  const handleSave = () => {
+    if (inputValue) {
+      setDocumentList([...documentList, inputValue]);
+      setInputValue('');
     } else {
-        contentDiv = document.createElement('div');
-        contentDiv.textContent = `Contenido de ${content}. Aquí puedes agregar más información específica sobre ${content}.`;
+      alert("Por favor, ingresa el nombre de la asignatura.");
     }
+  };
 
-    contentArea.appendChild(contentDiv);
+  return (
+    <div className="tab-content">
+      <h3>Asignar Asignatura</h3>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        placeholder="Ingresa el nombre de la asignatura"
+      />
+      <button onClick={handleSave}>Guardar Asignatura</button>
+      <ul>
+        {documentList.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
-    // Activar funcionalidades específicas
-    if (content === 'Asignación') {
-        setupAssignmentFunctionality();
-    } else if (content === 'InsertarAsignatura') {
-        setupNewSubjectFunctionality();
+function InsertarAsignatura() {
+  const [newSubjectInput, setNewSubjectInput] = useState('');
+  const [newSubjectList, setNewSubjectList] = useState([]);
+
+  const handleSaveNewSubject = () => {
+    if (newSubjectInput) {
+      setNewSubjectList([...newSubjectList, newSubjectInput]);
+      setNewSubjectInput('');
+    } else {
+      alert("Por favor, ingresa el nombre de la nueva asignatura.");
     }
+  };
+
+  return (
+    <div className="tab-content">
+      <h3>Insertar Nueva Asignatura</h3>
+      <input
+        type="text"
+        value={newSubjectInput}
+        onChange={(e) => setNewSubjectInput(e.target.value)}
+        placeholder="Nombre de la nueva asignatura"
+      />
+      <button onClick={handleSaveNewSubject}>Guardar Nueva Asignatura</button>
+      <h4>Lista de Asignaturas</h4>
+      <ul>
+        {newSubjectList.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
-function setupAssignmentFunctionality() {
-    document.getElementById("guardar").addEventListener("click", function() {
-        const text = document.getElementById("searchInput").value;
-        if (text) {
-            const documentList = document.getElementById("documentList");
-            const li = document.createElement("li");
-            li.textContent = text;
-            documentList.appendChild(li);
-            document.getElementById("searchInput").value = ''; // Limpiar campo de entrada
-        } else {
-            alert("Por favor, ingresa el nombre de la asignatura.");
-        }
-    });
+function Footer() {
+  return (
+    <footer className="app-footer">
+      <p>&copy; 2024 Mi Empresa. Todos los derechos reservados.</p>
+    </footer>
+  );
 }
 
-function setupNewSubjectFunctionality() {
-    document.getElementById("guardarNueva").addEventListener("click", function() {
-        const newText = document.getElementById("newSubjectInput").value;
-        if (newText) {
-            const newSubjectList = document.getElementById("newSubjectList");
-            const li = document.createElement("li");
-            li.textContent = newText;
-            newSubjectList.appendChild(li);
-            document.getElementById("newSubjectInput").value = ''; // Limpiar campo de entrada
-        } else {
-            alert("Por favor, ingresa el nombre de la nueva asignatura.");
-        }
-    });
-}
-
-function activateTab(content) {
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.classList.remove('tab-active');
-    });
-    contents.forEach(contentDiv => {
-        contentDiv.style.display = 'none';
-    });
-
-    const activeTab = document.getElementById(`tab-${content}`);
-    const activeContent = document.getElementById(content === 'Asignación' ? 'asignacion-content' : 'insertar-asignatura-content');
-    activeTab.classList.add('tab-active');
-    activeContent.style.display = 'block';
-}
-function activateTab(content) {
-    const tabs = document.querySelectorAll('.tab');
-    const contents = document.querySelectorAll('.tab-content');
-    tabs.forEach(tab => {
-        tab.classList.remove('tab-active');
-    });
-    contents.forEach(contentDiv => {
-        contentDiv.classList.remove('active'); // Cambia a uso de clase
-    });
-
-    const activeTab = document.getElementById(`tab-${content}`);
-    const activeContent = document.getElementById(content === 'Asignación' ? 'asignacion-content' : 'insertar-asignatura-content');
-    activeTab.classList.add('tab-active');
-    activeContent.classList.add('active'); // Cambia a uso de clase
-}
-
+export default App;
